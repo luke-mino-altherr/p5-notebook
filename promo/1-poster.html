@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Poster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=block" rel="stylesheet">
+  <link rel="stylesheet" href="promo.css">
+  <style>
+    #art { height: 690px; margin: 30px 0 34px; }
+    #art svg { width: 100%; height: 100%; }
+    h1 { font-size: 104px; white-space: nowrap; }
+    .tool { font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 54px; font-weight: 600; color: var(--red); margin-top: 6px; }
+    .sub { font-size: 29px; line-height: 1.35; margin-top: 22px; max-width: 860px; }
+    .details {
+      display: flex; gap: 40px; margin-top: 30px; padding-top: 18px;
+      font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 24px; font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="label">Workshop <span class="red">/</span> no coding needed</div>
+  <div id="art"></div>
+  <h1 data-event="name"></h1>
+  <div class="tool" data-event="tool"></div>
+  <p class="sub">Make generative art by describing it in plain English, then build it with p5.js and Claude, one step at a time.</p>
+  <div class="details rule">
+    <span data-event="date"></span><span data-event="time"></span><span data-event="place"></span>
+  </div>
+  <div class="footer"><span>Grid after Georg Nees, Schotter, 1968</span><span>Bring a laptop</span></div>
+
+  <script src="plotter.js"></script>
+  <script>
+    // A grid of squares that is perfectly neat at the top and falls apart towards the bottom.
+    const svg = makeSvg(document.getElementById('art'), 936, 690);
+    const rand = seeded(1968); // change the seed for a different drawing
+
+    const COLUMNS = 16;
+    const ROWS = 13;
+    const SIZE = 46; // the grid is 598 tall, leaving room below for squares that fall out
+    const left = (936 - COLUMNS * SIZE) / 2;
+    const redSquare = [9, ROWS - 1]; // which square is drawn in red: [column, row]
+
+    schotterGrid(svg, rand, {
+      left, top: 10, columns: COLUMNS, rows: ROWS, size: SIZE,
+      disorderAt: (col, row) => Math.pow(row / (ROWS - 1), 1.4) * 1.5,
+      attrs: (col, row) => (col === redSquare[0] && row === redSquare[1] ? { class: 'red thick' } : {}),
+    });
+  </script>
+</body>
+</html>

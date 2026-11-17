@@ -49,6 +49,7 @@ sketches/<slug>/
 - `server.js`: zero-dependency dev server (static files, live reload, `/sketches.json`, thumbnail saving).
 - `scripts/scan.js`: finds sketches; folders starting with `_` or `.` are skipped.
 - `scripts/new-sketch.js`, `scripts/build-index.js`: `npm run new` and `npm run build`.
+- `promo/`: workshop poster and infographics in a 1960s plotter style (plain HTML + SVG). Event details live at the top of `promo/plotter.js`; `./promo/render.sh` exports PNGs to `promo/images/` (gitignored) using macOS Chrome.
 
 Keep it buildless and free of dependencies. Every file should be readable and editable by someone who knows a little HTML.
 

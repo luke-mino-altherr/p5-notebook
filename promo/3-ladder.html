@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Ladder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=block" rel="stylesheet">
+  <link rel="stylesheet" href="promo.css">
+  <style>
+    h1 { font-size: 64px; margin: 16px 0 34px; }
+    #panels { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 40px; }
+    .panel svg { width: 100%; height: 232px; }
+    .step { margin-top: 14px; font-size: 24px; font-weight: 600; }
+    .step .num { font-family: 'IBM Plex Mono', Menlo, monospace; color: var(--red); margin-right: 10px; }
+    .prompt { font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 17px; line-height: 1.4; margin-top: 6px; color: var(--faint); }
+  </style>
+</head>
+<body>
+  <div class="label">From idea to artwork <span class="red">/</span> one idea per step</div>
+  <h1>Build it one step at a time</h1>
+  <div id="panels"></div>
+  <div class="footer"><span>Look at the result after every step</span><span><span data-event="title"></span> · <span data-event="date"></span></span></div>
+
+  <script src="plotter.js"></script>
+  <script>
+    // Every panel is the same drawing a step further along. Panels are 440 by 232 units.
+    const W = 440, H = 232;
+    const COLUMNS = 9, ROWS = 5, SIZE = 30, GAP = 10;
+    const gridLeft = (W - (COLUMNS * SIZE + (COLUMNS - 1) * GAP)) / 2;
+    const gridTop = (H - (ROWS * SIZE + (ROWS - 1) * GAP)) / 2;
+    const growsRight = (col) => Math.pow(col / (COLUMNS - 1), 1.3) * 1.3;
+    const grid = (svg, seed, disorderAt, attrs) =>
+      schotterGrid(svg, seeded(seed), {
+        left: gridLeft, top: gridTop, columns: COLUMNS, rows: ROWS, size: SIZE, gap: GAP, disorderAt, attrs,
+      });
+
+    const STEPS = [
+      ['One thing', 'Draw one square in the middle of cream paper.', (svg) => {
+        square(svg, W / 2, H / 2, SIZE * 1.4);
+      }],
+      ['Many things', 'Repeat it in a grid, 9 across and 5 down.', (svg) => {
+        grid(svg, 1, () => 0);
+      }],
+      ['Rules + chance', 'Turn each square by chance, more and more towards the right.', (svg) => {
+        grid(svg, 2, growsRight);
+      }],
+      ['Movement', 'Let the squares slowly drift and turn, leaving faint trails.', (svg) => {
+        // Earlier positions first, faint, then the current one on top.
+        for (const [shift, cls] of [[-10, 'ghost'], [-5, 'ghost'], [0, '']]) {
+          const rand = seeded(2);
+          for (let row = 0; row < ROWS; row++) for (let col = 0; col < COLUMNS; col++) {
+            const d = growsRight(col);
+            const cx = gridLeft + col * (SIZE + GAP) + SIZE / 2 + (rand() * 2 - 1) * d * SIZE * 0.5;
+            const cy = gridTop + row * (SIZE + GAP) + SIZE / 2 + (rand() * 2 - 1) * d * SIZE * 0.5;
+            const angle = (rand() * 2 - 1) * d * (Math.PI / 4);
+            square(svg, cx, cy + shift * d, SIZE, angle + (shift / 40) * d, cls ? { class: cls } : {});
+          }
+        }
+      }],
+      ['Interaction', 'Squares near the mouse get pushed into chaos.', (svg) => {
+        const mouse = [300, 120];
+        grid(svg, 3, (col, row) => {
+          const x = gridLeft + col * (SIZE + GAP) + SIZE / 2, y = gridTop + row * (SIZE + GAP) + SIZE / 2;
+          return Math.max(0, 1 - Math.hypot(x - mouse[0], y - mouse[1]) / 130) * 2.2;
+        });
+        cursor(svg, mouse[0] + 4, mouse[1] + 4, 30);
+      }],
+      ['Polish', 'Black ink on cream, with one red square that broke free.', (svg) => {
+        grid(svg, 2, growsRight, (col, row) => (col === 7 && row === 1 ? { class: 'red thick' } : {}));
+      }],
+    ];
+
+    const panels = document.getElementById('panels');
+    STEPS.forEach(([title, prompt, draw], i) => {
+      const panel = document.createElement('div');
+      panel.className = 'panel';
+      panel.innerHTML = `<div class="art"></div>
+        <div class="step"><span class="num">0${i + 1}</span>${title}</div>
+        <div class="prompt">“${prompt}”</div>`;
+      panels.appendChild(panel);
+      const svg = makeSvg(panel.querySelector('.art'), W, H);
+      add(svg, 'rect', { x: 0, y: 0, width: W, height: H, class: 'ghost' }); // a faint frame for the canvas
+      draw(svg);
+    });
+  </script>
+</body>
+</html>

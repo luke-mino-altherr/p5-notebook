@@ -1,0 +1,70 @@
+/* Shared look for the promo images: 1960s plotter drawings on cream paper. */
+:root {
+  --paper: #f2eee3;
+  --ink: #1b1b1b;
+  --faint: #6b675e;
+  --red: #c4372b;
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+body {
+  width: 1080px;
+  height: 1350px;
+  padding: 72px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.label,
+.mono {
+  font-family: 'IBM Plex Mono', Menlo, monospace;
+}
+
+.label {
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.label .red,
+.red-text { color: var(--red); }
+
+h1 {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.rule { border-top: 1.5px solid var(--ink); }
+
+.footer {
+  margin-top: auto;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'IBM Plex Mono', Menlo, monospace;
+  font-size: 15px;
+  color: var(--faint);
+}
+
+/* The drawings: thin pen lines that stay the same width whatever the drawing's scale. */
+svg { display: block; overflow: visible; }
+svg * {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4px;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+svg .solid { fill: var(--ink); stroke: none; }
+svg .red { stroke: var(--red); }
+svg .solid.red { fill: var(--red); stroke: none; }
+svg .ghost { opacity: 0.22; }
+svg .thick { stroke-width: 2.6px; }
+svg .cursor { fill: var(--paper); stroke: var(--ink); stroke-width: 1.6px; }

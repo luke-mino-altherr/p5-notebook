@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Building blocks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=block" rel="stylesheet">
+  <link rel="stylesheet" href="promo.css">
+  <style>
+    h1 { font-size: 64px; margin: 16px 0 30px; }
+    #blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; border-top: 1.5px solid var(--ink); }
+    .block {
+      display: grid; grid-template-columns: 124px 1fr; gap: 28px; align-items: center;
+      height: 202px; border-bottom: 1px solid #cfc9bb;
+    }
+    .block svg { width: 124px; height: 124px; }
+    .name { font-size: 25px; font-weight: 600; }
+    .name .num { font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 16px; color: var(--red); margin-right: 8px; }
+    .ask { font-size: 19px; line-height: 1.35; margin-top: 5px; color: var(--faint); }
+  </style>
+</head>
+<body>
+  <div class="label">The building blocks <span class="red">/</span> describe any idea</div>
+  <h1>Ten words for any artwork</h1>
+  <div id="blocks"></div>
+  <div class="footer"><span>Start with one. Add the next.</span><span><span data-event="title"></span> · <span data-event="date"></span></span></div>
+
+  <script src="plotter.js"></script>
+  <script>
+    // A small diagram for each block, 100 by 100 units.
+    const rand = seeded(10);
+
+    const BLOCKS = [
+      ['Canvas', 'Background colour? Do marks stay, fade or wipe?', (svg) => {
+        add(svg, 'rect', { x: 8, y: 14, width: 84, height: 72 });
+        for (let i = 0; i < 4; i++) circle(svg, 30 + i * 13, 50, 12, { opacity: 0.2 + i * 0.27 });
+      }],
+      ['Shapes', 'Circles, lines, squares, dots, text?', (svg) => {
+        circle(svg, 30, 30, 17);
+        square(svg, 70, 30, 30);
+        polygon(svg, [[30, 58], [48, 88], [12, 88]], { class: 'solid' });
+        line(svg, 56, 88, 88, 58);
+      }],
+      ['Where', 'Centre, grid, ring, random, near the mouse?', (svg) => {
+        circle(svg, 50, 50, 4, { class: 'solid red' });
+        for (let i = 0; i < 12; i++) {
+          const a = (i / 12) * Math.PI * 2;
+          circle(svg, 50 + Math.cos(a) * 36, 50 + Math.sin(a) * 36, 4, { class: 'solid' });
+        }
+      }],
+      ['How many', 'One, a row, a grid, hundreds?', (svg) => {
+        square(svg, 14, 50, 12);
+        for (let i = 0; i < 4; i++) square(svg, 38 + (i % 2) * 11, 39 + Math.floor(i / 2) * 11 + 5.5, 8);
+        for (let i = 0; i < 16; i++) circle(svg, 68 + (i % 4) * 7.5, 39 + Math.floor(i / 4) * 7.5, 2.4, { class: 'solid' });
+      }],
+      ['Once or forever', 'A still image, or something that moves?', (svg) => {
+        square(svg, 24, 50, 28);
+        add(svg, 'path', { d: 'M 84 50 A 16 16 0 1 1 74 35' });
+        pointer(svg, 76, 37, 7, -0.35);
+      }],
+      ['Change', 'What grows, turns or shifts over time?', (svg) => {
+        for (let i = 0; i < 5; i++) square(svg, 10 + i * 19, 50, 6 + i * 4.5, i * 0.22);
+      }],
+      ['Chance', 'Different every time? Jittery or smooth?', (svg) => {
+        for (let i = 0; i < 34; i++) circle(svg, 8 + rand() * 84, 8 + rand() * 84, 1.5 + rand() * 3, { class: 'solid' });
+      }],
+      ['Rules', 'How do things behave and react?', (svg) => {
+        add(svg, 'rect', { x: 8, y: 8, width: 84, height: 84 });
+        polyline(svg, [[14, 70], [40, 8], [92, 52], [64, 92], [8, 40], [26, 14]], { class: 'ghost' });
+        circle(svg, 26, 14, 4, { class: 'solid' });
+      }],
+      ['Memory', 'Trails, paths, things that build up?', (svg) => {
+        for (let i = 0; i < 14; i++) {
+          const t = i / 13;
+          circle(svg, 10 + t * 78, 70 - Math.sin(t * Math.PI) * 44, 1.5 + t * 5, { class: 'solid', opacity: 0.12 + t * 0.88 });
+        }
+      }],
+      ['Input', 'Mouse moves, clicks, drags, key presses?', (svg) => {
+        for (const r of [10, 20, 30]) circle(svg, 38, 38, r, { class: r === 10 ? '' : 'ghost' });
+        cursor(svg, 38, 38, 44);
+      }],
+    ];
+
+    const blocks = document.getElementById('blocks');
+    BLOCKS.forEach(([name, ask, draw], i) => {
+      const block = document.createElement('div');
+      block.className = 'block';
+      block.innerHTML = `<div class="glyph"></div>
+        <div><div class="name"><span class="num">${String(i + 1).padStart(2, '0')}</span>${name}</div><div class="ask">${ask}</div></div>`;
+      blocks.appendChild(block);
+      draw(makeSvg(block.querySelector('.glyph'), 100, 100));
+    });
+  </script>
+</body>
+</html>

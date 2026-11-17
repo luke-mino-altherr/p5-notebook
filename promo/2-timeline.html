@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Timeline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=block" rel="stylesheet">
+  <link rel="stylesheet" href="promo.css">
+  <style>
+    h1 { font-size: 64px; margin: 16px 0 26px; }
+    .row {
+      display: grid; grid-template-columns: 120px 104px 1fr; gap: 0 36px; align-items: center;
+      padding: 12px 0; border-top: 1px solid #cfc9bb;
+    }
+    .row:first-of-type { border-top: 1.5px solid var(--ink); }
+    .year { font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 34px; font-weight: 600; }
+    .glyph svg { width: 104px; height: 104px; }
+    .name { font-size: 25px; font-weight: 600; }
+    .name span { font-weight: 400; color: var(--faint); }
+    .what { font-size: 21px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="label">Generative art <span class="red">/</span> a short history</div>
+  <h1>300 years of rules + chance</h1>
+  <div id="rows"></div>
+  <div class="footer"><span>All of these are in the workshop gallery</span><span><span data-event="title"></span> · <span data-event="date"></span></span></div>
+
+  <script src="plotter.js"></script>
+  <script>
+    // Each milestone gets a tiny drawing (100 by 100 units) made with the same technique.
+
+    function truchet(svg, rand) {
+      const n = 5, s = 100 / n;
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+        const corners = [[x * s, y * s], [(x + 1) * s, y * s], [(x + 1) * s, (y + 1) * s], [x * s, (y + 1) * s]];
+        const skip = Math.floor(rand() * 4); // the random turn: leave out one corner
+        polygon(svg, corners.filter((_, i) => i !== skip), { class: 'solid' });
+      }
+    }
+
+    // Gray-Scott reaction-diffusion on a small wrap-around grid, drawn as dots.
+    function turing(svg, rand) {
+      const N = 50, FEED = 0.055, KILL = 0.062; // coral-like stripes
+      let a = new Float32Array(N * N).fill(1), b = new Float32Array(N * N);
+      let nextA = a.slice(), nextB = b.slice();
+      const at = (x, y) => ((y + N) % N) * N + ((x + N) % N);
+      for (let k = 0; k < 7; k++) {
+        const cx = Math.floor(rand() * N), cy = Math.floor(rand() * N);
+        for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) b[at(cx + dx, cy + dy)] = 1;
+      }
+      const blend = (g, x, y) =>
+        0.2 * (g[at(x - 1, y)] + g[at(x + 1, y)] + g[at(x, y - 1)] + g[at(x, y + 1)]) +
+        0.05 * (g[at(x - 1, y - 1)] + g[at(x + 1, y - 1)] + g[at(x - 1, y + 1)] + g[at(x + 1, y + 1)]);
+      for (let step = 0; step < 7000; step++) {
+        for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+          const i = y * N + x, A = a[i], B = b[i], eaten = A * B * B;
+          nextA[i] = A + (blend(a, x, y) - A) - eaten + FEED * (1 - A);
+          nextB[i] = B + 0.5 * (blend(b, x, y) - B) + eaten - (KILL + FEED) * B;
+        }
+        [a, nextA] = [nextA, a];
+        [b, nextB] = [nextB, b];
+      }
+      const cell = 100 / N;
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        // Overlapping dots merge into smooth, solid shapes.
+        if (b[y * N + x] > 0.2) circle(svg, (x + 0.5) * cell, (y + 0.5) * cell, cell * 0.75, { class: 'solid' });
+      }
+    }
+
+    function nake(svg, rand) {
+      const bands = 3, corners = 4;
+      const lines = [];
+      for (let i = 0; i <= bands; i++) {
+        const wobble = i === 0 || i === bands ? 4 : 10;
+        lines.push(Array.from({ length: corners + 1 }, () => 4 + i * 30.7 + (rand() * 2 - 1) * wobble));
+      }
+      const heightAt = (h, x) => {
+        const p = (x / 100) * corners, c = Math.min(Math.floor(p), corners - 1);
+        return h[c] + (h[c + 1] - h[c]) * (p - c);
+      };
+      lines.forEach((h) => polyline(svg, h.map((y, c) => [(c / corners) * 100, y])));
+      const fills = ['vertical', 'slant', 'vertical'];
+      for (let i = 0; i < bands; i++) {
+        const lean = fills[i] === 'slant' ? 12 : 0;
+        for (let n = 0; n < 9; n++) {
+          const x1 = rand() * 100, x2 = Math.min(100, Math.max(0, x1 + lean));
+          line(svg, x1, heightAt(lines[i], x1), x2, heightAt(lines[i + 1], x2));
+        }
+      }
+      circle(svg, 68, 58, 9);
+    }
+
+    function nees(svg, rand) {
+      schotterGrid(svg, rand, {
+        left: 11, top: 6, columns: 6, rows: 6, size: 13,
+        disorderAt: (col, row) => (row / 5) * 1.4,
+      });
+    }
+
+    // Conway's Game of Life: random cells, then a few generations of the rules.
+    function life(svg, rand) {
+      const N = 13;
+      let cells = Array.from({ length: N * N }, () => rand() < 0.38);
+      for (let gen = 0; gen < 6; gen++) {
+        cells = cells.map((alive, i) => {
+          const x = i % N, y = Math.floor(i / N);
+          let around = 0;
+          for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+            if ((dx || dy) && cells[((y + dy + N) % N) * N + ((x + dx + N) % N)]) around++;
+          }
+          return around === 3 || (alive && around === 2);
+        });
+      }
+      const cell = 100 / N;
+      cells.forEach((alive, i) => {
+        const x = (i % N) * cell, y = Math.floor(i / N) * cell;
+        if (alive) add(svg, 'rect', { x: x + 1, y: y + 1, width: cell - 2, height: cell - 2, class: 'solid' });
+      });
+      for (let k = 0; k <= N; k++) {
+        line(svg, k * cell, 0, k * cell, 100, { class: 'ghost' });
+        line(svg, 0, k * cell, 100, k * cell, { class: 'ghost' });
+      }
+    }
+
+    function vogel(svg) {
+      const seeds = 280, spacing = 48 / Math.sqrt(seeds);
+      const golden = (137.508 * Math.PI) / 180;
+      for (let n = 0; n < seeds; n++) {
+        const r = spacing * Math.sqrt(n);
+        circle(svg, 50 + Math.cos(n * golden) * r, 50 + Math.sin(n * golden) * r, spacing * 0.36, { class: 'solid' });
+      }
+    }
+
+    // A flock streaming along a gentle curve, each bird pointing the way it flies.
+    function reynolds(svg, rand) {
+      for (let i = 0; i < 26; i++) {
+        const t = rand();
+        const x = 6 + t * 88;
+        const y = 50 + 20 * Math.sin(t * 4.5) + (rand() - 0.5) * 22;
+        const angle = Math.atan((20 * 4.5 * Math.cos(t * 4.5)) / 88) + (rand() - 0.5) * 0.5;
+        pointer(svg, x, y, 5.5, angle);
+      }
+    }
+
+    // Lines following an invisible field of directions.
+    function hobbs(svg, rand) {
+      const direction = (x, y) => Math.sin(x * 0.045 + 1) * 1.5 + Math.cos(y * 0.055) * 1.2;
+      for (let n = 0; n < 34; n++) {
+        let x = rand() * 100, y = rand() * 100;
+        const points = [[x, y]];
+        for (let step = 0; step < 30; step++) {
+          const a = direction(x, y);
+          x += Math.cos(a) * 2.4;
+          y += Math.sin(a) * 2.4;
+          if (x < 0 || x > 100 || y < 0 || y > 100) break;
+          points.push([x, y]);
+        }
+        if (points.length > 6) polyline(svg, points);
+      }
+    }
+
+    const MILESTONES = [
+      ['1704', 'Truchet Tiles', 'Sébastien Truchet', 'One tile, turned at random, makes endless patterns.', truchet],
+      ['1952', 'Turing Patterns', 'Alan Turing', 'Two chemicals react and spread into spots and stripes.', turing],
+      ['1965', 'Klee Grid', 'Frieder Nake', 'Rules split the page; chance fills each part.', nake],
+      ['1968', 'Schotter', 'Georg Nees', 'Order breaks down, one square at a time.', nees],
+      ['1970', 'Game of Life', 'John Conway', 'Cells live or die by counting their neighbours.', life],
+      ['1979', 'Phyllotaxis', 'Helmut Vogel', 'A whole sunflower from one turning angle.', vogel],
+      ['1987', 'Boids', 'Craig Reynolds', 'Three simple rules make a flock.', reynolds],
+      ['2020', 'Flow Fields', 'Tyler Hobbs', 'Lines drift along an invisible current.', hobbs],
+    ];
+
+    const rows = document.getElementById('rows');
+    MILESTONES.forEach(([year, name, who, what, draw], i) => {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `<div class="year">${year}</div><div class="glyph"></div>
+        <div><div class="name">${name} <span>${who}</span></div><div class="what">${what}</div></div>`;
+      rows.appendChild(row);
+      draw(makeSvg(row.querySelector('.glyph'), 100, 100), seeded(7 + i * 31));
+    });
+  </script>
+</body>
+</html>
