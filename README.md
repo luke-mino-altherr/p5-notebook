@@ -42,7 +42,8 @@ That creates `sketches/rainy-window/`. Open `sketch.js` in that folder and start
 
 ## Viewing a sketch
 
-- Move the mouse to show the toolbar: **← Gallery**, **Fullscreen**, and **Save thumbnail**.
+- Move the mouse to show the toolbar: **← Gallery**, **Fullscreen**, **Code**, and **Save thumbnail**.
+- **Code** opens a side panel with the sketch’s `sketch.js`, with a Copy button.
 - **Save thumbnail** freezes the current frame as the sketch's gallery picture. The live sketch still plays when you hover over the card.
 - Press **Esc** to go back to the gallery.
 
