@@ -1,7 +1,15 @@
-// A homage to "Schotter" ("Gravel") by Georg Nees, 1968, one of the first works of computer art.
-// A grid of squares starts perfectly ordered at the top. Each row down, the squares
-// are rotated and pushed out of place a little more, until the grid falls apart.
-// Click (or tap) for a new random version.
+// SCHOTTER, after Georg Nees (1968)
+//
+// ABOUT: Georg Nees was one of the first people to make art with a computer. His
+// drawings were printed by a plotter, a machine that moves a pen over paper. "Schotter"
+// means "gravel" in German.
+//
+// THE IDEA: order slowly breaking down. At the top, the squares sit in a perfect grid.
+// Each row down, a little more randomness is added to their position and rotation,
+// until the grid falls apart. Click (or tap) for a new random version.
+//
+// TRY CHANGING: CHAOS, COLUMNS and ROWS, or make the randomness grow from the centre
+// outwards instead of from top to bottom.
 
 const COLUMNS = 12;
 const ROWS = 22;
