@@ -1,0 +1,15 @@
+{
+  "name": "p5-notebook",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A notebook of p5.js sketches. Each sketch gets a card in the gallery and opens full page.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "new": "node scripts/new-sketch.js",
+    "build": "node scripts/build-index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
