@@ -5,8 +5,11 @@
   "description": "A notebook of p5.js sketches. Each sketch gets a card in the gallery and opens full page.",
   "type": "module",
   "scripts": {
+    "prestart": "node scripts/check-node.cjs",
     "start": "node server.js",
+    "prenew": "node scripts/check-node.cjs",
     "new": "node scripts/new-sketch.js",
+    "prebuild": "node scripts/check-node.cjs",
     "build": "node scripts/build-index.js"
   },
   "engines": {
