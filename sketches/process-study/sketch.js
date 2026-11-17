@@ -1,17 +1,6 @@
 // PROCESS STUDY, after Casey Reas (2004 onwards)
-//
-// ABOUT: Casey Reas co-created Processing, the language p5.js grew out of. In his
-// "Process" series each artwork starts as a few sentences in plain English describing
-// simple elements and how they behave. The software is just one way of carrying them out.
-//
-// THE IDEA (our own instructions, in the same spirit):
-//   - Circles drift across the space in straight lines.
-//   - While two circles overlap, draw a faint line between their centres.
-//   - While a circle is touching another, it slowly turns.
-// Nothing here says "make a pattern", yet one builds up from thousands of faint lines.
-//
-// TRY CHANGING: COUNT, the circle sizes, the line colour, or invent a new rule
-// (e.g. circles speed up while touching). Write your rule in words first, then in code.
+// How it works in plain English, and the prompts that built it: see recipe.md
+// (click Recipe in the sketch's toolbar).
 
 const COUNT = 90;
 const LINE_ALPHA = 14; // how strong each line is: lower = softer, slower build-up

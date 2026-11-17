@@ -1,16 +1,6 @@
 // SUBSTRATE, after Jared Tarbell (2003)
-//
-// ABOUT: Jared Tarbell's "Substrate" grows lines that look like cracks in dried mud or
-// a city seen from above. It was part of a wave of 2000s software art where artists
-// wrote small simulations and let them run, shaping the result through the rules.
-//
-// THE IDEA: a "crack" walks in a straight line until it hits another crack or the edge.
-// Then it stops, and a new crack sprouts at a right angle from some existing crack.
-// Each crack also scatters a few grains of coloured sand beside it, building up soft
-// shading over time. Every grain is placed by a rule; nothing is drawn by hand.
-//
-// TRY CHANGING: MAX_CRACKS, the PALETTE, GRAINS, or the 90 in newCrack()
-// (try 60 for triangular cells).
+// How it works in plain English, and the prompts that built it: see recipe.md
+// (click Recipe in the sketch's toolbar).
 
 const MAX_CRACKS = 120;
 const SEEDS = 12;          // how many cracks to start with

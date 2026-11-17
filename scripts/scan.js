@@ -42,6 +42,8 @@ export function scanSketches(root) {
         slug: entry.name,
         title: readTag(html, /<title>([\s\S]*?)<\/title>/i) || entry.name,
         description: readTag(html, /<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i),
+        // Optional: example sketches about art history set this so the gallery can order them by date.
+        year: readTag(html, /<meta\s+name=["']year["']\s+content=["']([^"']*)["']/i) || null,
         thumbnail: THUMBNAILS.find((name) => fs.existsSync(path.join(dir, name))) || null,
         updated: Math.round(lastModified(dir)),
       };

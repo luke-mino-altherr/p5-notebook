@@ -49,9 +49,14 @@ const html = fs.readFileSync(indexPath, 'utf8').replace(
 );
 fs.writeFileSync(indexPath, html);
 
+const recipePath = path.join(target, 'recipe.md');
+const recipe = fs.readFileSync(recipePath, 'utf8').replace(/^# .*$/m, `# ${title}`);
+fs.writeFileSync(recipePath, recipe);
+
 console.log(`
 Created sketches/${slug}/
 
   Edit:  sketches/${slug}/sketch.js
+         sketches/${slug}/recipe.md   (the plain-English recipe)
   View:  http://localhost:3000/sketches/${slug}/   (run "npm start" first)
 `);

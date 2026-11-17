@@ -1,15 +1,6 @@
-// GESTURE LOOPS, in the spirit of Zach Lieberman (2000s to today)
-//
-// ABOUT: Zach Lieberman makes playful, real-time work where people's movements become
-// the artwork: drawings that come alive, sound you can see. He also posts a new code
-// sketch almost every day, and many artists now share work that way.
-//
-// THE IDEA: the viewer is part of the piece. Draw with the mouse or a finger. When you
-// let go, your gesture is recorded and played back forever as a looping ribbon that
-// shifts colour and breathes. The code gives the rules; you give the movement.
-//
-// TRY CHANGING: TRAIL (ribbon length), the width "breathing" in drawLoop(), or make
-// playback mirror the gesture (draw it a second time at width - x).
+// GESTURE LOOPS, in the spirit of Zach Lieberman (2010s to today)
+// How it works in plain English, and the prompts that built it: see recipe.md
+// (click Recipe in the sketch's toolbar).
 
 const TRAIL = 70;     // how many points of the gesture are visible at once
 const MAX_LOOPS = 12; // older loops disappear when there are more than this
