@@ -36,6 +36,52 @@ Use these words with participants. They map directly to p5 and are tagged on eve
 | **Memory** | Does anything need to remember the past: trails, recorded paths, a growing list? |
 | **Input** | What happens when someone moves the mouse, clicks, drags or presses a key? |
 
+## Techniques worth knowing
+
+Techniques are ready-made ways of answering several building blocks at once. When an idea matches one, name it, say in a sentence how it works, and point to the history example if there is one (they can open it and click **Recipe**). Still tag prompts with building blocks, not technique names, so participants keep thinking about what is actually happening.
+
+Offer **Start here** techniques to beginners. Offer **Next** ones once someone has a sketch moving. Mention **Advanced** ones only when the idea really calls for them, and build them in even smaller steps.
+
+### Start here
+
+| Technique | How it works | Blocks | Reach for it when they say... | Example |
+|---|---|---|---|---|
+| **Waves** | `sin` and `cos` make a number rise and fall smoothly, forever | Change | breathing, pulsing, bobbing, swaying, tides | Harmonic Motion |
+| **Rings and spirals** | Place things around a circle using an angle; turn by the golden angle for a sunflower spiral | Where, Repetition | flower, mandala, galaxy, clock, sunflower | Phyllotaxis, Harmonic Motion |
+| **Symmetry** | Draw the same mark mirrored or rotated 6 or 8 times | Input, Repetition | kaleidoscope, snowflake, mandala | |
+| **Trails and fading** | Paint a see-through background each frame instead of wiping it, so marks fade slowly | Canvas, Memory | trails, ghostly, glowing, long exposure | Gesture Loops |
+| **Random walkers** | A dot takes a small random step each frame and leaves a line behind it | Chance, Memory | wandering, ants, scribble, lost | |
+| **Order to disorder** | A grid where the randomness grows from one side to the other | Repetition, Change, Chance | falling apart, decay, crumbling, entropy | Schotter |
+| **Tiling** | One simple tile, rotated or flipped at random, across a grid | Repetition, Chance | maze, textile, wallpaper, mosaic | Truchet Tiles |
+
+### Next
+
+| Technique | How it works | Blocks | Reach for it when they say... | Example |
+|---|---|---|---|---|
+| **Noise** | Smooth randomness: nearby inputs give nearby outputs, so things drift instead of jumping | Chance, Change | organic, natural, wind, terrain, clouds | Flow Field |
+| **Flow fields** | An invisible map of directions (usually from noise) that particles follow | Chance, Rules, Memory | currents, hair, smoke, wind, rivers | Flow Field |
+| **Subdivision** | Split a rectangle in two, then split the pieces, at random, a few levels deep | Rules, Chance | Mondrian, city blocks, stained glass | Klee Grid |
+| **Recursion / fractal trees** | A shape that draws smaller copies of itself: each branch grows two smaller branches | Repetition, Rules | trees, ferns, lightning, rivers from above | Mandelbrot Set (a different fractal, same self-similarity) |
+| **Particles with physics** | Many dots with a speed, pushed by gravity, bouncing, or pulled toward the mouse | Rules, Change, Input | fireworks, rain, snow, magnets, sparks | |
+| **Flocking** | Each agent follows three rules: stay close, don't crowd, match direction | Rules, Change | birds, fish, swarm, crowd | Boids |
+| **Circle packing** | Grow circles at random places until they touch each other | Rules, Memory | bubbles, cells, foam, pebbles | |
+| **Agents with simple rules** | Moving shapes that react when they touch or overlap | Rules, Change | conversation, connection, collisions | Process Study |
+
+### Advanced
+
+Mention these when they fit, and be honest that they take a few more steps:
+
+- **Voronoi regions**: every part of the canvas belongs to its nearest dot (cells, cracked mud, giraffe skin).
+- **Cellular automata**: a grid of cells that each look at their neighbours to decide what happens next (growth, spreading, life). Example: Game of Life.
+- **Growth systems**: cracks that branch, crystals that clump, roots that reach toward food. Example: Substrate.
+- **L-systems**: plant shapes grown from text rewrite rules, the next step after fractal trees.
+- **Strange attractors**: a tiny formula repeated thousands of times draws smoky, silky shapes.
+- **Contour lines**: topographic-map lines traced through noise.
+- **Dithering and image sampling**: rebuild a photo or webcam image out of dots, tiles or letters.
+- **Reaction-diffusion**: coral and leopard-spot patterns. Slow in p5, so keep the grid small. Example: Turing Patterns.
+
+Steer away from shaders, raymarching and 3D unless the person is an experienced coder who asks for them.
+
 ## Workflow
 
 ### 1. Turn the idea into building blocks
@@ -51,6 +97,7 @@ When someone describes an idea ("rain on a window", "something calm and organic"
   - "glowing" → a faint wide copy behind a bright thin one, or soft see-through layers
   - "calm" → slow speeds, few colours, things fading rather than snapping
   - "like X" → what X is made of (shapes), how many, and how they move
+- If the idea matches a technique from **Techniques worth knowing**, suggest it in one sentence, e.g. *"Hair blowing in the wind is a good fit for a flow field: an invisible map of directions that lines follow."* Build it up from the building blocks as usual.
 
 ### 2. Write the recipe and a ladder of steps
 
